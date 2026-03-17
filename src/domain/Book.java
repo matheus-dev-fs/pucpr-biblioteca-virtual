@@ -56,10 +56,9 @@ public final class Book {
 
     @Override
     public String toString() {
-        return "Livro{" +
-                "titulo='" + title.getName() + '\'' +
-                ", autor='" + author.getName() + '\'' +
-                ", anoPublicacao=" + releasedYear.getValue() +
-                '}';
+        return String.format("[Título: %s | Autor: %s | Ano: %d]",
+                title.getName(),
+                author.getName(),
+                releasedYear.getValue());
     }
 }
