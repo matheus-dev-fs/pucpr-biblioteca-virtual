@@ -105,7 +105,9 @@ public class Main {
         if (book != null) {
             String userName = InputHandler.getStringValue(
                     "Digite o seu nome para entrar na fila: ",
-                    "O nome não pode ser vazio."
+                    "O nome não pode ser vazio.",
+                    (String name) -> name.trim().length() >= 2,
+                    "O nome deve conter pelo menos 2 caracteres."
             );
 
             library.joinWaitlist(book, userName);
