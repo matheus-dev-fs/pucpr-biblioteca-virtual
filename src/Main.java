@@ -4,6 +4,7 @@ import util.InputHandler;
 import util.LibrarySeeder;
 
 import java.util.Scanner;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
@@ -42,6 +43,9 @@ public class Main {
                     case 5:
                         callNextFromWaitlist(library);
                         break;
+                    case 6: // Novo case chamando o motor de recomendações
+                        suggestBooks(library);
+                        break;
                     case 0:
                         System.out.println("\nEncerrando o sistema. Até logo!");
                         isRunning = false;
@@ -65,6 +69,7 @@ public class Main {
         System.out.println("3. Ver último livro acessado");
         System.out.println("4. Entrar na fila de espera de um livro");
         System.out.println("5. Chamar próximo da fila de espera");
+        System.out.println("6. Sugestões de Leitura"); // Nova opção
         System.out.println("0. Sair");
         System.out.println("=============================================");
     }
@@ -144,5 +149,29 @@ public class Main {
 
         System.out.println("Livro não encontrado no catálogo.");
         return null;
+    }
+
+    private static void suggestBooks(Library library) {
+        System.out.println("\n--- Sugestões de Leitura ---");
+
+        Book lastBook = library.getLastViewedBook();
+
+        if (lastBook == null) {
+            System.out.println("Você ainda não acessou nenhum livro.");
+            System.out.println("Acesse um livro (Opção 2) para receber recomendações personalizadas!");
+            return;
+        }
+
+        System.out.println("Baseado na sua última leitura ('" + lastBook.getTitle().getName() + "'), sugerimos as seguintes obras relacionadas:");
+
+        Set<Book> recommendations = library.getRecommendations(lastBook);
+
+        if (recommendations.isEmpty()) {
+            System.out.println("Nenhuma recomendação encontrada para este livro no momento.");
+        } else {
+            for (Book recommendedBook : recommendations) {
+                System.out.println("-> " + recommendedBook);
+            }
+        }
     }
 }

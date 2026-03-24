@@ -1,15 +1,12 @@
 package domain;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.*;
 
 public class Library {
     private final LinkedList<Book> books = new LinkedList<>();
     private final Stack<Book> browsingHistory = new Stack<>();
     private final Map<Book, Queue<User>> waitlists = new HashMap<>();
+    private final Map<Book, Set<Book>> recommendations = new HashMap<>();
 
     public void addBook(Book book) {
         books.add(book);
@@ -62,13 +59,15 @@ public class Library {
         return queue.poll().getName();
     }
 
-    public String peekNextInWaitlist(Book book) {
-        Queue<User> queue = waitlists.get(book);
-
-        if (queue == null || queue.isEmpty()) {
-            return null;
+    public void addRecommendation(Book book, Book recommendedBook) {
+        if (!books.contains(book) || !books.contains(recommendedBook)) {
+            throw new IllegalArgumentException("Ambos os livros devem pertencer ao catálogo desta biblioteca.");
         }
 
-        return queue.peek().getName();
+        recommendations.computeIfAbsent(book, (Book k) -> new HashSet<Book>()).add(recommendedBook);
+    }
+
+    public Set<Book> getRecommendations(Book book) {
+        return recommendations.getOrDefault(book, Collections.emptySet());
     }
 }
