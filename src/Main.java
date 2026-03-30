@@ -1,8 +1,10 @@
 import domain.Book;
 import domain.Library;
+import domain.User;
 import util.InputHandler;
 import util.LibrarySeeder;
 
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -30,21 +32,35 @@ public class Main {
                 switch (option) {
                     case 1:
                         listBooks(library);
+                        waitForEnter();
                         break;
                     case 2:
                         viewBook(library);
+                        waitForEnter();
                         break;
                     case 3:
                         showLastViewedBook(library);
+                        waitForEnter();
                         break;
                     case 4:
-                        joinWaitlist(library);
+                        showBrowsingHistory(library);
+                        waitForEnter();
                         break;
                     case 5:
-                        callNextFromWaitlist(library);
+                        joinWaitlist(library);
+                        waitForEnter();
                         break;
-                    case 6: // Novo case chamando o motor de recomendações
+                    case 6:
+                        callNextFromWaitlist(library);
+                        waitForEnter();
+                        break;
+                    case 7:
+                        showWaitlist(library);
+                        waitForEnter();
+                        break;
+                    case 8:
                         suggestBooks(library);
+                        waitForEnter();
                         break;
                     case 0:
                         System.out.println("\nEncerrando o sistema. Até logo!");
@@ -67,11 +83,18 @@ public class Main {
         System.out.println("1. Listar catálogo de livros");
         System.out.println("2. Acessar um livro");
         System.out.println("3. Ver último livro acessado");
-        System.out.println("4. Entrar na fila de espera de um livro");
-        System.out.println("5. Chamar próximo da fila de espera");
-        System.out.println("6. Sugestões de Leitura"); // Nova opção
+        System.out.println("4. Ver histórico completo de navegação");
+        System.out.println("5. Entrar na fila de espera de um livro");
+        System.out.println("6. Chamar próximo da fila de espera");
+        System.out.println("7. Ver fila de espera de um livro");
+        System.out.println("8. Sugestões de Leitura"); // Nova opção
         System.out.println("0. Sair");
         System.out.println("=============================================");
+    }
+
+    private static void waitForEnter() {
+        System.out.println("\nPressione ENTER para continuar...");
+        InputHandler.getScanner().nextLine();
     }
 
     private static void listBooks(Library library) {
@@ -101,6 +124,17 @@ public class Main {
         } else {
             System.out.println("O histórico está vazio. Você ainda não acessou nenhum livro.");
         }
+    }
+
+    public static void showBrowsingHistory(Library library) {
+        System.out.println("\n--- Histórico Completo de Navegação ---");
+
+        if (library.getBrowsingHistory().isEmpty()) {
+            System.out.println("O histórico está vazio. Você ainda não acessou nenhum livro.");
+            return;
+        }
+
+        library.getBrowsingHistory().forEach(System.out::println);
     }
 
     private static void joinWaitlist(Library library) {
@@ -133,6 +167,26 @@ public class Main {
                 System.out.println("A fila de espera para este livro está vazia no momento.");
             }
         }
+    }
+
+    public static void showWaitlist(Library library) {
+        System.out.println("\n--- Fila de Espera ---");
+        Book book = searchBookByTitle(library);
+
+        if (book == null) {
+            System.out.println("Não foi possível encontrar o livro para exibir a fila de espera.");
+            return;
+        }
+
+        Queue<User> waitlist = library.getWaitlist(book);
+
+        if (waitlist.isEmpty()) {
+            System.out.println("A fila de espera para este livro está vazia no momento.");
+            return;
+        }
+
+        System.out.println("Fila de espera para '" + book.getTitle().getName() + "':");
+        waitlist.forEach((User user) -> System.out.println("- " + user.getName()));
     }
 
     private static Book searchBookByTitle(Library library) {

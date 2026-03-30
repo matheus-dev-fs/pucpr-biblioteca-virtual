@@ -38,6 +38,9 @@ public class Library {
         return browsingHistory.peek();
     }
 
+    public Stack<Book> getBrowsingHistory() {
+        return browsingHistory;
+    }
 
     public void joinWaitlist(Book book, String userName) {
         if (!books.contains(book)) {
@@ -47,6 +50,14 @@ public class Library {
         User user = new User(userName);
         Queue<User> queue = waitlists.get(book);
         queue.offer(user);
+    }
+
+    public Queue<User> getWaitlist(Book book) {
+        if (!books.contains(book)) {
+            throw new IllegalArgumentException("O livro não pertence ao catálogo desta biblioteca.");
+        }
+
+        return new LinkedList<>(waitlists.get(book));
     }
 
     public String callNextFromWaitlist(Book book) {
