@@ -1,4 +1,4 @@
-package util;
+package util.structure;
 
 public class Pair<T> {
     private final T first;

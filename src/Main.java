@@ -87,7 +87,7 @@ public class Main {
         System.out.println("5. Entrar na fila de espera de um livro");
         System.out.println("6. Chamar próximo da fila de espera");
         System.out.println("7. Ver fila de espera de um livro");
-        System.out.println("8. Sugestões de Leitura"); // Nova opção
+        System.out.println("8. Sugestões de Leitura");
         System.out.println("0. Sair");
         System.out.println("=============================================");
     }
@@ -99,6 +99,7 @@ public class Main {
 
     private static void listBooks(Library library) {
         System.out.println("\n--- Catálogo de Livros ---");
+
         for (Book book : library.getBooks()) {
             System.out.println(book);
         }
@@ -195,14 +196,13 @@ public class Main {
                 "O título não pode ser vazio."
         );
 
-        for (Book book : library.getBooks()) {
-            if (book.getTitle().getName().equalsIgnoreCase(title)) {
-                return book;
-            }
+        Book foundBook = library.searchBook(title);
+
+        if (foundBook == null) {
+            System.out.println("Livro não encontrado no catálogo.");
         }
 
-        System.out.println("Livro não encontrado no catálogo.");
-        return null;
+        return foundBook;
     }
 
     private static void suggestBooks(Library library) {

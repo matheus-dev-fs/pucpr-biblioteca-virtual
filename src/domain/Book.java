@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Objects;
 
-public final class Book {
+public final class Book implements Comparable<Book> {
 
     private final Title title;
     private final Author author;
@@ -60,5 +60,14 @@ public final class Book {
                 title.getName(),
                 author.getName(),
                 releasedYear.getValue());
+    }
+
+    @Override
+    public int compareTo(Book otherBook) {
+        if (otherBook == null) {
+            return 1;
+        }
+        
+        return this.title.getName().compareToIgnoreCase(otherBook.getTitle().getName());
     }
 }

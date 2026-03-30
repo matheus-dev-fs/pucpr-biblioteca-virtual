@@ -1,32 +1,38 @@
 package domain;
 
+import util.structure.BinarySearchTree;
+
 import java.util.*;
 
 public class Library {
-    private final LinkedList<Book> books = new LinkedList<>();
+    private final BinarySearchTree<Book> bookTree = new BinarySearchTree<>();
+
     private final Stack<Book> browsingHistory = new Stack<>();
     private final Map<Book, Queue<User>> waitlists = new HashMap<>();
     private final Map<Book, Set<Book>> recommendations = new HashMap<>();
 
     public void addBook(Book book) {
-        books.add(book);
+        bookTree.insert(book);
         waitlists.put(book, new LinkedList<>());
     }
 
-    public void removeBook(Book book) {
-        books.remove(book);
-        waitlists.remove(book);
+    public List<Book> getBooks() {
+        return bookTree.getInOrder();
     }
 
-    public LinkedList<Book> getBooks() {
-        return new LinkedList<>(books);
+    public Book searchBook(String title) {
+        Book dummySearchBook = new Book(title, "Autor Falso", 2000);
+        return bookTree.search(dummySearchBook);
+    }
+
+    private boolean containsBook(Book book) {
+        return bookTree.search(book) != null;
     }
 
     public void viewBook(Book book) {
-        if (!books.contains(book)) {
+        if (!containsBook(book)) {
             throw new IllegalArgumentException("O livro não pertence ao catálogo desta biblioteca.");
         }
-
         browsingHistory.push(book);
     }
 
@@ -34,7 +40,6 @@ public class Library {
         if (browsingHistory.isEmpty()) {
             return null;
         }
-
         return browsingHistory.peek();
     }
 
@@ -43,7 +48,7 @@ public class Library {
     }
 
     public void joinWaitlist(Book book, String userName) {
-        if (!books.contains(book)) {
+        if (!containsBook(book)) {
             throw new IllegalArgumentException("O livro não pertence ao catálogo desta biblioteca.");
         }
 
@@ -53,7 +58,7 @@ public class Library {
     }
 
     public Queue<User> getWaitlist(Book book) {
-        if (!books.contains(book)) {
+        if (!containsBook(book)) {
             throw new IllegalArgumentException("O livro não pertence ao catálogo desta biblioteca.");
         }
 
@@ -71,7 +76,7 @@ public class Library {
     }
 
     public void addRecommendation(Book book, Book recommendedBook) {
-        if (!books.contains(book) || !books.contains(recommendedBook)) {
+        if (!containsBook(book) || !containsBook(recommendedBook)) {
             throw new IllegalArgumentException("Ambos os livros devem pertencer ao catálogo desta biblioteca.");
         }
 
