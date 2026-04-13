@@ -4,6 +4,7 @@ import domain.User;
 import util.InputHandler;
 import util.LibrarySeeder;
 
+import java.util.List;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.Set;
@@ -62,6 +63,10 @@ public class Main {
                         suggestBooks(library);
                         waitForEnter();
                         break;
+                    case 9:
+                        searchBookWithTrace(library);
+                        waitForEnter();
+                        break;
                     case 0:
                         System.out.println("\nEncerrando o sistema. Até logo!");
                         isRunning = false;
@@ -88,6 +93,7 @@ public class Main {
         System.out.println("6. Chamar próximo da fila de espera");
         System.out.println("7. Ver fila de espera de um livro");
         System.out.println("8. Sugestões de Leitura");
+        System.out.println("9. Comparar buscas avançadas (DFS e BFS)");
         System.out.println("0. Sair");
         System.out.println("=============================================");
     }
@@ -227,5 +233,41 @@ public class Main {
                 System.out.println("-> " + recommendedBook);
             }
         }
+    }
+
+    private static void searchBookWithTrace(Library library) {
+        System.out.println("\n--- Comparar Buscas: Profundidade (DFS) vs Largura (BFS) ---");
+
+        String title = InputHandler.getStringValue(
+                "Digite o título do livro que deseja rastrear: ",
+                "O título não pode ser vazio."
+        );
+
+        Book foundBook = library.searchBook(title);
+
+        if (foundBook == null) {
+            System.out.println("O livro '" + title + "' não foi encontrado no catálogo.");
+            return;
+        }
+
+        System.out.println("\nLivro encontrado!");
+
+        System.out.println("\n[ Rastro DFS - Busca em Profundidade ]");
+
+        List<Book> dfsPath = library.getDfsPath(title);
+        for (int i = 0; i < dfsPath.size(); i++) {
+            System.out.println((i + 1) + "º nó visitado: " + dfsPath.get(i).getTitle().getName());
+        }
+
+        System.out.println("=> Total de passos no DFS: " + dfsPath.size());
+
+        System.out.println("\n[ Rastro BFS - Busca em Largura ]");
+
+        List<Book> bfsPath = library.getBfsPath(title);
+        for (int i = 0; i < bfsPath.size(); i++) {
+            System.out.println((i + 1) + "º nó visitado: " + bfsPath.get(i).getTitle().getName());
+        }
+
+        System.out.println("=> Total de passos no BFS: " + bfsPath.size());
     }
 }

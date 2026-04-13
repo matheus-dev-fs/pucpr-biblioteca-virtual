@@ -6,7 +6,6 @@ import java.util.*;
 
 public class Library {
     private final BinarySearchTree<Book> bookTree = new BinarySearchTree<>();
-
     private final Stack<Book> browsingHistory = new Stack<>();
     private final Map<Book, Queue<User>> waitlists = new HashMap<>();
     private final Map<Book, Set<Book>> recommendations = new HashMap<>();
@@ -85,5 +84,15 @@ public class Library {
 
     public Set<Book> getRecommendations(Book book) {
         return recommendations.getOrDefault(book, Collections.emptySet());
+    }
+
+    public List<Book> getDfsPath(String title) {
+        Book dummySearchBook = new Book(title, "Autor Falso", 2000);
+        return bookTree.searchDFS(dummySearchBook);
+    }
+
+    public List<Book> getBfsPath(String title) {
+        Book dummySearchBook = new Book(title, "Autor Falso", 2000);
+        return bookTree.searchBFS(dummySearchBook);
     }
 }
