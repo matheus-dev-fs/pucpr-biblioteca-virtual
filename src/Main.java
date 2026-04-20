@@ -4,10 +4,7 @@ import domain.User;
 import util.InputHandler;
 import util.LibrarySeeder;
 
-import java.util.List;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -93,7 +90,7 @@ public class Main {
         System.out.println("6. Chamar próximo da fila de espera");
         System.out.println("7. Ver fila de espera de um livro");
         System.out.println("8. Sugestões de Leitura");
-        System.out.println("9. Comparar buscas avançadas (DFS e BFS)");
+        System.out.println("9. Comparar buscas avançadas");
         System.out.println("0. Sair");
         System.out.println("=============================================");
     }
@@ -212,26 +209,28 @@ public class Main {
     }
 
     private static void suggestBooks(Library library) {
-        System.out.println("\n--- Sugestões de Leitura ---");
-
+        System.out.println("\n--- Sugestões de Leitura (Dijkstra) ---");
         Book lastBook = library.getLastViewedBook();
 
         if (lastBook == null) {
-            System.out.println("Você ainda não acessou nenhum livro.");
-            System.out.println("Acesse um livro (Opção 2) para receber recomendações personalizadas!");
+            System.out.println("Acesse um livro para gerar recomendações.");
             return;
         }
 
-        System.out.println("Baseado na sua última leitura ('" + lastBook.getTitle().getName() + "'), sugerimos as seguintes obras relacionadas:");
-
-        Set<Book> recommendations = library.getRecommendations(lastBook);
+        Map<Book, Integer> recommendations = library.calculateDijkstra(lastBook);
+        recommendations.remove(lastBook);
 
         if (recommendations.isEmpty()) {
-            System.out.println("Nenhuma recomendação encontrada para este livro no momento.");
+            System.out.println("Nenhuma recomendação encontrada.");
         } else {
-            for (Book recommendedBook : recommendations) {
-                System.out.println("-> " + recommendedBook);
-            }
+            System.out.println("Baseado em: '" + lastBook.getTitle().getName() + "'");
+            recommendations.entrySet().stream()
+                    .sorted(Map.Entry.comparingByValue())
+                    .forEach(entry -> {
+                        String relevance = entry.getValue() == 1 ? "[Alta Relevância]" : "[Relacionado]";
+                        System.out.printf("- %s %s (Distância: %d)\n",
+                                entry.getKey().getTitle().getName(), relevance, entry.getValue());
+                    });
         }
     }
 

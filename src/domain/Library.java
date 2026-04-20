@@ -95,4 +95,32 @@ public class Library {
         Book dummySearchBook = new Book(title, "Autor Falso", 2000);
         return bookTree.searchBFS(dummySearchBook);
     }
+
+    public Map<Book, Integer> calculateDijkstra(Book source) {
+        if (!containsBook(source)) {
+            throw new IllegalArgumentException("O livro não pertence ao catálogo.");
+        }
+
+        Map<Book, Integer> distances = new HashMap<>();
+        Queue<Book> queue = new LinkedList<>();
+
+        distances.put(source, 0);
+        queue.add(source);
+
+        while (!queue.isEmpty()) {
+            Book current = queue.poll();
+            int currentDistance = distances.get(current);
+
+            Set<Book> neighbors = recommendations.getOrDefault(current, Collections.emptySet());
+
+            for (Book neighbor : neighbors) {
+                if (!distances.containsKey(neighbor)) {
+                    distances.put(neighbor, currentDistance + 1);
+                    queue.add(neighbor);
+                }
+            }
+        }
+
+        return distances;
+    }
 }
