@@ -1,7 +1,7 @@
 package util;
 
 import domain.Book;
-import domain.BookCategory;
+import enums.BookCategory;
 import domain.Library;
 import util.structure.Pair;
 

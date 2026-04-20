@@ -1,5 +1,5 @@
 import domain.Book;
-import domain.BookCategory;
+import enums.BookCategory;
 import domain.Library;
 import domain.User;
 import util.InputHandler;
@@ -235,7 +235,7 @@ public class Main {
             System.out.println("Baseado em: '" + lastBook.getTitle().getName() + "'");
             recommendations.entrySet().stream()
                     .sorted(Map.Entry.comparingByValue())
-                    .forEach(entry -> {
+                    .forEach((Map.Entry<Book, Integer> entry) -> {
                         String relevance = entry.getValue() == 1 ? "[Alta Relevância]" : "[Relacionado]";
                         System.out.printf("- %s %s (Distância: %d)\n",
                                 entry.getKey().getTitle().getName(), relevance, entry.getValue());

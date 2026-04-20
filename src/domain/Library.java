@@ -1,5 +1,6 @@
 package domain;
 
+import enums.BookCategory;
 import util.structure.BinarySearchTree;
 
 import java.util.*;

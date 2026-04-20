@@ -1,5 +1,7 @@
 package domain;
 
+import enums.BookCategory;
+
 import java.util.Objects;
 
 public final class Book implements Comparable<Book> {
