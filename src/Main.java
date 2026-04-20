@@ -1,4 +1,5 @@
 import domain.Book;
+import domain.BookCategory;
 import domain.Library;
 import domain.User;
 import util.InputHandler;
@@ -101,11 +102,19 @@ public class Main {
     }
 
     private static void listBooks(Library library) {
-        System.out.println("\n--- Catálogo de Livros ---");
+        System.out.println("\n--- Catálogo de Livros por Categoria ---");
 
-        for (Book book : library.getBooks()) {
-            System.out.println(book);
+        Map<BookCategory, List<Book>> booksByCategory = library.getBooksGroupedByCategory();
+
+        if (booksByCategory.isEmpty()) {
+            System.out.println("Não há livros cadastrados no catálogo.");
+            return;
         }
+
+        booksByCategory.forEach((category, books) -> {
+            System.out.println("\n" + category.getDisplayName() + ":");
+            books.forEach((Book book) -> System.out.println("- " + book));
+        });
     }
 
     private static void viewBook(Library library) {

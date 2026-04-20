@@ -3,6 +3,7 @@ package domain;
 import util.structure.BinarySearchTree;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Library {
     private final BinarySearchTree<Book> bookTree = new BinarySearchTree<>();
@@ -20,7 +21,7 @@ public class Library {
     }
 
     public Book searchBook(String title) {
-        Book dummySearchBook = new Book(title, "Autor Falso", 2000);
+        Book dummySearchBook = new Book(title, "Autor Falso", 2000, BookCategory.PROGRAMMING);
         return bookTree.search(dummySearchBook);
     }
 
@@ -87,13 +88,35 @@ public class Library {
     }
 
     public List<Book> getDfsPath(String title) {
-        Book dummySearchBook = new Book(title, "Autor Falso", 2000);
+        Book dummySearchBook = new Book(title, "Autor Falso", 2000, BookCategory.PROGRAMMING);
         return bookTree.searchDFS(dummySearchBook);
     }
 
     public List<Book> getBfsPath(String title) {
-        Book dummySearchBook = new Book(title, "Autor Falso", 2000);
+        Book dummySearchBook = new Book(title, "Autor Falso", 2000, BookCategory.PROGRAMMING);
         return bookTree.searchBFS(dummySearchBook);
+    }
+
+    public Map<BookCategory, List<Book>> getBooksGroupedByCategory() {
+        List<Book> sortedBooks = new ArrayList<>(getBooks());
+        sortedBooks.sort(Comparator.comparing((Book book) -> book.getTitle().getName(), String.CASE_INSENSITIVE_ORDER));
+
+        Map<BookCategory, List<Book>> groupedBooks = new HashMap<>();
+
+        for (Book book : sortedBooks) {
+            BookCategory category = book.getCategory().getValue();
+            groupedBooks.computeIfAbsent(category, key -> new ArrayList<>()).add(book);
+        }
+
+        return groupedBooks.entrySet().stream()
+                .sorted(Comparator.comparing((Map.Entry<BookCategory, List<Book>> entry) -> entry.getKey().getDisplayName(),
+                        String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (first, second) -> first,
+                        LinkedHashMap::new
+                ));
     }
 
     public Map<Book, Integer> calculateDijkstra(Book source) {
@@ -114,8 +137,11 @@ public class Library {
             Set<Book> neighbors = recommendations.getOrDefault(current, Collections.emptySet());
 
             for (Book neighbor : neighbors) {
-                if (!distances.containsKey(neighbor)) {
-                    distances.put(neighbor, currentDistance + 1);
+                int candidateDistance = currentDistance + 1;
+                Integer knownDistance = distances.get(neighbor);
+
+                if (knownDistance == null || candidateDistance < knownDistance) {
+                    distances.put(neighbor, candidateDistance);
                     queue.add(neighbor);
                 }
             }
