@@ -62,6 +62,10 @@ public class Main {
                         waitForEnter();
                         break;
                     case 9:
+                        suggestBooksDijkstra(library);
+                        waitForEnter();
+                        break;
+                    case 10:
                         searchBookWithTrace(library);
                         waitForEnter();
                         break;
@@ -71,6 +75,7 @@ public class Main {
                         break;
                     default:
                         System.out.println("\nOpção inválida. Tente novamente.");
+                        waitForEnter();
                 }
             }
         } catch (Exception e) {
@@ -91,7 +96,8 @@ public class Main {
         System.out.println("6. Chamar próximo da fila de espera");
         System.out.println("7. Ver fila de espera de um livro");
         System.out.println("8. Sugestões de Leitura");
-        System.out.println("9. Comparar buscas avançadas");
+        System.out.println("9. Sugestões de Leitura (Dijkstra)");
+        System.out.println("10. Comparar buscas avançadas");
         System.out.println("0. Sair");
         System.out.println("=============================================");
     }
@@ -218,6 +224,30 @@ public class Main {
     }
 
     private static void suggestBooks(Library library) {
+        System.out.println("\n--- Sugestões de Leitura ---");
+
+        Book lastBook = library.getLastViewedBook();
+
+        if (lastBook == null) {
+            System.out.println("Você ainda não acessou nenhum livro.");
+            System.out.println("Acesse um livro (Opção 2) para receber recomendações!");
+            return;
+        }
+
+        System.out.println("Livros que possuem relação direta com '" + lastBook.getTitle().getName() + "':");
+
+        Set<Book> recommendations = library.getRecommendations(lastBook);
+
+        if (recommendations.isEmpty()) {
+            System.out.println("Nenhuma recomendação direta encontrada para este livro.");
+        } else {
+            for (Book recommendedBook : recommendations) {
+                System.out.println("-> " + recommendedBook);
+            }
+        }
+    }
+
+    private static void suggestBooksDijkstra(Library library) {
         System.out.println("\n--- Sugestões de Leitura (Dijkstra) ---");
         Book lastBook = library.getLastViewedBook();
 
