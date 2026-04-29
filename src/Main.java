@@ -4,6 +4,9 @@ import domain.Library;
 import domain.User;
 import util.InputHandler;
 import util.LibrarySeeder;
+import util.sorting.BookNameGenerator;
+import util.sorting.BubbleSort;
+import util.sorting.MergeSort;
 
 import java.util.*;
 
@@ -69,6 +72,10 @@ public class Main {
                         searchBookWithTrace(library);
                         waitForEnter();
                         break;
+                    case 11:
+                        compareSortingEfficiency();
+                        waitForEnter();
+                        break;
                     case 0:
                         System.out.println("\nEncerrando o sistema. Até logo!");
                         isRunning = false;
@@ -98,6 +105,7 @@ public class Main {
         System.out.println("8. Sugestões de Leitura");
         System.out.println("9. Sugestões de Leitura (Dijkstra)");
         System.out.println("10. Comparar buscas avançadas");
+        System.out.println("11. Ordenação (Bubble vs Merge)");
         System.out.println("0. Sair");
         System.out.println("=============================================");
     }
@@ -307,5 +315,35 @@ public class Main {
         }
 
         System.out.println("=> Total de passos no BFS: " + bfsPath.size());
+    }
+
+    private static void compareSortingEfficiency() {
+        System.out.println("\n--- Avaliação de Eficiência de Ordenação ---");
+
+        int amount = 10000;
+
+        System.out.println("Gerando " + amount + " nomes de livros aleatórios...");
+        String[] randomNames = BookNameGenerator.generateNames(amount);
+
+        System.out.println("Executando Bubble Sort...");
+
+        util.sorting.BubbleSort bubble = new BubbleSort();
+        long startTimeBubble = System.currentTimeMillis();
+        bubble.sort(randomNames);
+        long endTimeBubble = System.currentTimeMillis();
+
+        System.out.println("Executando Merge Sort...");
+
+        util.sorting.MergeSort merge = new MergeSort();
+        long startTimeMerge = System.currentTimeMillis();
+        merge.sort(randomNames);
+        long endTimeMerge = System.currentTimeMillis();
+
+        System.out.println("\n================ RESULTADOS ================");
+        System.out.printf("%-15s | %-15s | %-10s\n", "Algoritmo", "Comparações", "Tempo (ms)");
+        System.out.println("--------------------------------------------");
+        System.out.printf("%-15s | %-15d | %-10d\n", "Bubble Sort", bubble.getComparisons(), (endTimeBubble - startTimeBubble));
+        System.out.printf("%-15s | %-15d | %-10d\n", "Merge Sort", merge.getComparisons(), (endTimeMerge - startTimeMerge));
+        System.out.println("============================================");
     }
 }
